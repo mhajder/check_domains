@@ -16,26 +16,36 @@ import requests
 #     return domains[1:]
 
 
-def check_domain(domain_name):
+def check_domain(domain_name, errors):
     headers = {'Accept': 'application/dns-json'}
     domain_check = requests.get(f'https://cloudflare-dns.com/dns-query?type=SOA&name={domain_name}.', headers=headers)
     if domain_check.status_code == 200:
         response = domain_check.json()
-        if 'Status' in response:
-            if response['Status'] == 0:
+        if errors is True:
+            if 'Status' in response:
+                if response['Status'] == 3:
+                    return False
+                else:
+                    return True
+            else:
                 return True
+        else:
+            if 'Status' in response:
+                if response['Status'] == 0:
+                    return True
+                else:
+                    return False
             else:
                 return False
-        else:
-            return False
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Checking if the domain has SOA records. If it doesn\'t, there is a '
                                                  'good chance that it can be free.')
     requiredParser = parser.add_argument_group('required arguments')
-    requiredParser.add_argument('-p', '--process', type=str, required=True, help='File to process')
-    parser.add_argument('-o', '--output', type=str, help='Optional output file')
+    requiredParser.add_argument('-p', '--process', action='store', type=str, required=True, help='File to process')
+    parser.add_argument('-o', '--output', action='store', type=str, help='Output file')
+    parser.add_argument('-e', '--errors', action='store_true', default=False, help='DNS errors as registered domains')
 
     if len(sys.argv) == 1:
         # display help message when no args are passed.
@@ -45,7 +55,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if not os.path.isfile(args.process):
-        print("File path {} does not exist. Exiting...".format(args.process))
+        print('File path {} does not exist. Exiting...'.format(args.process))
         sys.exit()
 
     input_file = open(args.process, mode='r', newline='', encoding="utf-8")
@@ -53,7 +63,7 @@ if __name__ == '__main__':
         output_file = open(args.output, mode='a', newline='', encoding="utf-8")
         for row in input_file:
             domain = idna.encode(row.strip()).decode('utf-8')
-            has_soa = check_domain(domain)
+            has_soa = check_domain(domain, args.errors)
             if has_soa is False:
                 print(f'{domain}: {has_soa}')
                 output_file.write(domain)
@@ -62,7 +72,7 @@ if __name__ == '__main__':
     else:
         for row in input_file:
             domain = idna.encode(row.strip()).decode('utf-8')
-            has_soa = check_domain(domain)
+            has_soa = check_domain(domain, args.errors)
             if has_soa is False:
                 print(f'{domain}: {has_soa}')
     input_file.close()

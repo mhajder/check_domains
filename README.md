@@ -31,16 +31,16 @@ crunch 6 6 abcdefghijklmnopqrstuvwxyz -t @@@.pl -o domains.txt
 
 ## Usage
 
-To view help:
+### To view help:
 
 ```shell script
 python check_domains.py
 ```
 
-Help:
+### Help:
 
-```shell script
-usage: check_domains.py [-h] -p PROCESS [-o OUTPUT]
+```
+usage: check_domains.py [-h] -p PROCESS [-o OUTPUT] [-e]
 
 Checking if the domain has SOA records. If it doesn't, there is a good chance
 that it can be free.
@@ -48,23 +48,31 @@ that it can be free.
 optional arguments:
   -h, --help            show this help message and exit
   -o OUTPUT, --output OUTPUT
-                        Optional output file
+                        Output file
+  -e, --errors          DNS errors as registered domains
 
 required arguments:
   -p PROCESS, --process PROCESS
                         File to process
 ```
 
-To start checking domains:
+### To start checking domains:
 
 ```shell script
 python check_domains.py -p domains.txt
 ```
 where `domains.txt` is your domains file to check
 
-To start checking domains and saving the output:
+### To start checking domains and saving the output:
 
 ```shell script
 python check_domains.py -p domains.txt -o output.txt
+```
+where `domains.txt` is your domains file to check and `output.txt` is a file with domains that can be free
+
+You can also use the `-e` flag to not display domains as free if there was a DNS error.
+
+```shell script
+python check_domains.py -p domains.txt -o output.txt -e
 ```
 where `domains.txt` is your domains file to check and `output.txt` is a file with domains that can be free
