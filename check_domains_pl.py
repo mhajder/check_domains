@@ -57,6 +57,12 @@ if __name__ == '__main__':
         for row in input_file:
             domain = idna.encode(row.strip()).decode('utf-8')
             check_domain_results = check_domain(domain)
+
+            if check_domain_results['domain'] == 'limit':
+                input_file.close()
+                output_file.close()
+                sys.exit('Maximal amount of queries from your IP was exceeded. Try again later')
+
             if check_domain_results['results'] is True:
                 print(f'{check_domain_results["domain"]}: {check_domain_results["results"]}')
                 output_file.write(domain)
@@ -66,6 +72,11 @@ if __name__ == '__main__':
         for row in input_file:
             domain = idna.encode(row.strip()).decode('utf-8')
             check_domain_results = check_domain(domain)
+
+            if check_domain_results['domain'] == 'limit':
+                input_file.close()
+                sys.exit('Maximal amount of queries from your IP was exceeded. Try again later')
+
             if check_domain_results['results'] is True:
                 print(f'{check_domain_results["domain"]}: {check_domain_results["results"]}')
     input_file.close()
