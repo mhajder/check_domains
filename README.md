@@ -2,12 +2,11 @@
 
 Check if the domain is free by checking if the SOA record exists.
 
-
 ## Installation
 
 Install requirements using pip:
 
-```shell script
+```shell
 pip install -r requirements.txt
 ```
 
@@ -19,13 +18,13 @@ The easiest way is to use the [crunch](https://sourceforge.net/projects/crunch-w
 
 To generate a list consisting of 2-character domains (numbers and letters) for the **.pl**. Just run the command:
 
-```shell script
+```shell
 crunch 5 5 0123456789abcdefghijklmnopqrstuvwxyz -t @@.pl -o domains.txt
 ```
 
 To generate a list consisting of 3-character domains (letters only) for the **.pl**. Just run the command:
 
-```shell script
+```shell
 crunch 6 6 abcdefghijklmnopqrstuvwxyz -t @@@.pl -o domains.txt
 ```
 
@@ -33,7 +32,7 @@ crunch 6 6 abcdefghijklmnopqrstuvwxyz -t @@@.pl -o domains.txt
 
 ### To view help:
 
-```shell script
+```shell
 python check_domains.py
 ```
 
@@ -58,21 +57,35 @@ required arguments:
 
 ### To start checking domains:
 
-```shell script
+```shell
 python check_domains.py -p domains.txt
 ```
+
 where `domains.txt` is your domains file to check
 
 ### To start checking domains and saving the output:
 
-```shell script
+```shell
 python check_domains.py -p domains.txt -o output.txt
 ```
+
 where `domains.txt` is your domains file to check and `output.txt` is a file with domains that can be free
 
 You can also use the `-e` flag to not display domains as free if there was a DNS error.
 
-```shell script
+```shell
 python check_domains.py -p domains.txt -o output.txt -e
 ```
+
 where `domains.txt` is your domains file to check and `output.txt` is a file with domains that can be free
+
+### Script that checks only **.pl** domains
+
+If you only have a few **.pl** domains to check, for example after using the previous script, you can check them with a
+script that queries the [dns.pl](https://dns.pl/) API.
+
+**Remember that there is a limit of API calls!**
+
+```shell
+python check_domains_pl.py -p domains.txt -o output.txt
+```
