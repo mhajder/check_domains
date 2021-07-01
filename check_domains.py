@@ -23,20 +23,20 @@ def check_domain(domain_name, errors):
         response = domain_check.json()
         if errors is True:
             if 'Status' in response:
-                if response['Status'] == 3:
-                    return False
+                if response['Status'] == 3 and 'Authority' in response and 'Answer' not in response:
+                    return True  # Probably not registered
                 else:
-                    return True
+                    return False  # Probably registered
             else:
-                return True
+                return False  # Probably registered
         else:
             if 'Status' in response:
-                if response['Status'] == 0:
-                    return True
+                if response['Status'] == 3 and 'Authority' in response and 'Answer' not in response:
+                    return True  # Probably not registered
                 else:
-                    return False
+                    return False  # Probably registered
             else:
-                return False
+                return True  # Probably not registered
 
 
 if __name__ == '__main__':
@@ -63,16 +63,16 @@ if __name__ == '__main__':
         output_file = open(args.output, mode='a', newline='', encoding="utf-8")
         for row in input_file:
             domain = idna.encode(row.strip()).decode('utf-8')
-            has_soa = check_domain(domain, args.errors)
-            if has_soa is False:
-                print(f'{domain}: {has_soa}')
+            has_not_soa = check_domain(domain, args.errors)
+            if has_not_soa is True:
+                print(f'{domain}: {has_not_soa}')
                 output_file.write(domain)
                 output_file.write('\n')
         output_file.close()
     else:
         for row in input_file:
             domain = idna.encode(row.strip()).decode('utf-8')
-            has_soa = check_domain(domain, args.errors)
-            if has_soa is False:
-                print(f'{domain}: {has_soa}')
+            has_not_soa = check_domain(domain, args.errors)
+            if has_not_soa is True:
+                print(f'{domain}: {has_not_soa}')
     input_file.close()
